@@ -32,11 +32,11 @@ public class ScoreService {
                     .getScore();
         }
 
-        int score = calculateScore(request);
+        int score = calculateScore(CreditRequest request);
 
         // Save New Record
-        CustomerCredit customer =
-                new CustomerCredit();
+        ScoreRequest customer =
+                new ScoreRequest();
 
         customer.setPanNumber(
                 request.getPanNo());
@@ -48,7 +48,7 @@ public class ScoreService {
         return score;
     }
 
-    private int calculateScore(ApplicationDTO app) {
+    private int calculateScore( CreditRequest app) {
 
         if (app.getTotalCards() >= 2) {
             return 300;
