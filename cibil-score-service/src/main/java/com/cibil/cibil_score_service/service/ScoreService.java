@@ -1,6 +1,5 @@
-package com.cibil.service;
+package com.cibil.cibil_score_service.service;
 
-import com.cibil.cibil_score_service.FeignClient.ApplicationClient;
 import com.cibil.cibil_score_service.dto.ApplicationDTO;
 import com.cibil.cibil_score_service.dto.CreditRequest;
 import com.cibil.dto.ScoreRequest;
@@ -18,13 +17,10 @@ public class ScoreService {
     @Autowired
     private ScoreRepository repository;
 
-    @Autowired
-    private ApplicationClient client;
-
-    public ScoreRequest checkScore(CreditRequest request) {
+    public int checkScore(CreditRequest request) {
 
         // Existing Score Check
-         Optional<CustomerCredit> existingCustomer =
+         Optional<ScoreRequest> existingCustomer =
                 repository.findByPanNumber(
                         request.getPanNo());
 

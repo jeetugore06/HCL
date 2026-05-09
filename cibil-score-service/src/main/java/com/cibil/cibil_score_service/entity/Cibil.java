@@ -1,10 +1,11 @@
-package com.cibil.entity;
+package com.cibil.cibil_score_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tbl_cibil_score"
+@Table(
+    name = "tbl_cibil_score",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = "panNo")
     }

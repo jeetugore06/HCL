@@ -1,5 +1,5 @@
 
-package com.cibil.repository;
+package com.cibil.cibil_score_service.repository;
 
 import com.cibil.entity.Cibil;
 import org.springframework.data.jpa.repository.JpaRepository;

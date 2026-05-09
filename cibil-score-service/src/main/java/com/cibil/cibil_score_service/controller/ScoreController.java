@@ -1,4 +1,4 @@
-package com.cibil.controller;
+package com.cibil.cibil_score_service.controller;
 
 import com.cibil.dto.ScoreRequest;
 import com.cibil.entity.Score;

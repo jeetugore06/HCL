@@ -1,4 +1,4 @@
-package com.cibil.dto;
+package com.cibil.cibil_score_service.dto;
 
 import lombok.Data;
 
