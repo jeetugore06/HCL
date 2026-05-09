@@ -1,0 +1,23 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: customer-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/creditcards
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+security:
+  jwt:
+    secret: change-me-to-a-very-long-secret-key-at-least-32-bytes
+    expiration-seconds: 3600
