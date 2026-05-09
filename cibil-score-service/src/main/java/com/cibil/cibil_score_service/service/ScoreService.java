@@ -1,14 +1,12 @@
 package com.cibil.cibil_score_service.service;
 
 import com.cibil.cibil_score_service.dto.CreditRequest;
-import com.cibil.cibil_score_service.dto.ScoreRequest;
 import com.cibil.cibil_score_service.entity.Cibil;
 import com.cibil.cibil_score_service.repository.ScoreRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
 import java.util.Optional;
 
 @Service
