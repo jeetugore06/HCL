@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.Optional;
 
 @Service
 public class ScoreService {
@@ -19,27 +20,20 @@ public class ScoreService {
     public int checkScore(CreditRequest request) {
 
         // Existing Score Check
-         Optional<ScoreRequest> existingCustomer =
-                repository.findByPanNumber(
-                        request.getPanNo());
+        Optional<Cibil> existingCustomer =
+                repository.findByPanNo(request.getPanNo());
 
-        // If score already exists
+        // If already exists
         if (existingCustomer.isPresent()) {
-
-            return existingCustomer
-                    .get()
-                    .getScore();
+            return existingCustomer.get().getScore();
         }
 
-        int score = calculateScore(CreditRequest request);
+        // Calculate score
+        int score = calculateScore(request);
 
-        // Save New Record
-        ScoreRequest customer =
-                new ScoreRequest();
-
-        customer.setPanNumber(
-                request.getPanNo());
-
+        // Save new record
+        Cibil customer = new Cibil();
+        customer.setPanNo(request.getPanNo());
         customer.setScore(score);
 
         repository.save(customer);
