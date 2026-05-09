@@ -1,5 +1,5 @@
 package com.cibil.cibil_score_service.test;
-/* 
+/*
 import com.cibil.cibil_score_service.controller.ScoreController;
 import com.cibil.cibil_score_service.dto.CreditRequest;
 import com.cibil.cibil_score_service.dto.ScoreRequest;
@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-
+ 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ScoreController.class)
 public class ScoreControllerTest {

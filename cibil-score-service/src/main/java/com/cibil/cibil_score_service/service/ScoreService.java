@@ -41,7 +41,7 @@ public class ScoreService {
 
     private int calculateScore( CreditRequest app) {
 
-        if (app.getTotalCards() >= 2) {
+        if (app.getTotalCards().intValue() >= 2) {
             return 300;
         }
 
