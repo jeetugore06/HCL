@@ -32,9 +32,9 @@ public class RegistrationSchedulerProperties {
     private int batchSize = 10;
 
     /**
-     * Base endpoint of the external CIBIL service.
-     * The PAN of the applicant is appended as a path variable at call time:
-     * {@code <creditScoreUrl>/{pan}}.
+     * Endpoint of the external CIBIL service.
+     * Called via {@code POST} with a JSON body of
+     * {@code panNo, annualSalary, totalCards}; returns a single integer score.
      */
     private String creditScoreUrl = "http://localhost:8081/api/cibil/check";
 
