@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +35,11 @@ import com.hcl.hackathon.registration.util.ApplicationStatus;
 /**
  * Service-layer unit tests for the credit-card registration flow.
  * Pure JUnit 5 + Mockito; no Spring context boot.
+ *
+ * Covers only the service methods reachable from a remaining REST endpoint or
+ * from the credit-score scheduler:
+ *   processApplication, getApplicationByReference, getNextPendingApplication,
+ *   getPendingApplications, applyCreditScore, deleteApplication.
  */
 @ExtendWith(MockitoExtension.class)
 class RegistrationServiceTest {
@@ -84,7 +88,7 @@ class RegistrationServiceTest {
                 .build();
     }
 
-    // ---------- CREATE ----------
+    // ---------- CREATE (POST /) ----------
 
     @Test
     @DisplayName("processApplication: persists entity and returns ack response")
@@ -116,46 +120,7 @@ class RegistrationServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ---------- READ ALL ----------
-
-    @Test
-    @DisplayName("getAllApplications: maps every entity to a detail DTO")
-    void getAllApplications_returnsList() {
-        ApplicationDetailDTO detail = ApplicationDetailDTO.builder().id(1L).build();
-        when(repository.findAll()).thenReturn(List.of(entity));
-        when(mapper.toDetailDTO(entity)).thenReturn(detail);
-
-        List<ApplicationDetailDTO> result = service.getAllApplications();
-
-        assertThat(result).hasSize(1).containsExactly(detail);
-        verify(mapper, times(1)).toDetailDTO(entity);
-    }
-
-    // ---------- READ BY ID ----------
-
-    @Test
-    @DisplayName("getApplicationById: returns detail DTO when found")
-    void getApplicationById_found() {
-        ApplicationDetailDTO detail = ApplicationDetailDTO.builder().id(1L).build();
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
-        when(mapper.toDetailDTO(entity)).thenReturn(detail);
-
-        ApplicationDetailDTO result = service.getApplicationById(1L);
-
-        assertThat(result).isSameAs(detail);
-    }
-
-    @Test
-    @DisplayName("getApplicationById: throws ResourceNotFoundException when missing")
-    void getApplicationById_notFound() {
-        when(repository.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.getApplicationById(99L))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("99");
-    }
-
-    // ---------- READ BY REFERENCE ----------
+    // ---------- READ BY REFERENCE (GET /reference/{reference}) ----------
 
     @Test
     @DisplayName("getApplicationByReference: returns detail DTO when found")
@@ -179,7 +144,7 @@ class RegistrationServiceTest {
                 .hasMessageContaining("MISSING");
     }
 
-    // ---------- NEXT PENDING ----------
+    // ---------- NEXT PENDING (GET /pending/next) ----------
 
     @Test
     @DisplayName("getNextPendingApplication: returns oldest SUBMITTED record when present")
@@ -205,42 +170,6 @@ class RegistrationServiceTest {
 
         assertThat(result).isEmpty();
         verify(mapper, never()).toDetailDTO(any());
-    }
-
-    // ---------- UPDATE ----------
-
-    @Test
-    @DisplayName("updateApplication: applies request DTO and returns updated detail")
-    void updateApplication_success() {
-        ApplicationDetailDTO detail = ApplicationDetailDTO.builder().id(1L).email("amit@example.com").build();
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
-        when(mapper.updateEntity(entity, request)).thenReturn(entity);
-        when(repository.save(entity)).thenReturn(entity);
-        when(mapper.toDetailDTO(entity)).thenReturn(detail);
-
-        ApplicationDetailDTO result = service.updateApplication(1L, request);
-
-        assertThat(result).isSameAs(detail);
-        verify(mapper).updateEntity(entity, request);
-        verify(repository).save(entity);
-    }
-
-    @Test
-    @DisplayName("updateApplication: null payload throws IllegalArgumentException")
-    void updateApplication_nullPayload() {
-        assertThatThrownBy(() -> service.updateApplication(1L, null))
-                .isInstanceOf(IllegalArgumentException.class);
-        verify(repository, never()).findById(any());
-    }
-
-    @Test
-    @DisplayName("updateApplication: missing entity throws ResourceNotFoundException")
-    void updateApplication_notFound() {
-        when(repository.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.updateApplication(99L, request))
-                .isInstanceOf(ResourceNotFoundException.class);
-        verify(repository, never()).save(any());
     }
 
     // ---------- BATCH FETCH (scheduler) ----------
@@ -296,7 +225,7 @@ class RegistrationServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ---------- DELETE ----------
+    // ---------- DELETE (DELETE /{id}) ----------
 
     @Test
     @DisplayName("deleteApplication: removes existing record")

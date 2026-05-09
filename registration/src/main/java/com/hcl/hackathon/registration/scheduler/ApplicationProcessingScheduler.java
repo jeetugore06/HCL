@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.hcl.hackathon.registration.client.CibilCheckRequest;
 import com.hcl.hackathon.registration.client.CreditScoreClient;
 import com.hcl.hackathon.registration.config.RegistrationSchedulerProperties;
 import com.hcl.hackathon.registration.dto.ApplicationDetailDTO;
@@ -38,6 +39,9 @@ import lombok.extern.slf4j.Slf4j;
         matchIfMissing = true)
 public class ApplicationProcessingScheduler {
 
+    /** TODO: replace with a call to the cards-held service when available. */
+    private static final int DEFAULT_TOTAL_CARDS = 0;
+
     private final RegistrationSchedulerProperties properties;
     private final RegistrationService registrationService;
     private final CreditScoreClient creditScoreClient;
@@ -56,11 +60,16 @@ public class ApplicationProcessingScheduler {
         int processed = 0;
         int skipped = 0;
         for (ApplicationDetailDTO app : pending) {
-            String pan = app.getDocumentId();
-            var maybeScore = creditScoreClient.fetchCreditScore(pan);
+            CibilCheckRequest request = CibilCheckRequest.builder()
+                    .panNo(app.getDocumentId())
+                    .annualSalary(app.getAnnualSalary())
+                    .totalCards(DEFAULT_TOTAL_CARDS)
+                    .build();
+
+            var maybeScore = creditScoreClient.fetchCreditScore(request);
             if (maybeScore.isEmpty()) {
                 log.warn("Skipping application id: {} — CIBIL lookup failed for pan: {}",
-                        app.getId(), pan);
+                        app.getId(), request.getPanNo());
                 skipped++;
                 continue;
             }
