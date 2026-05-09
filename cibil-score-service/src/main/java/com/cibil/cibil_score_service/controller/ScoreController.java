@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class ScoreController {
 
      @Autowired
-    private CreditScoreService service;
+    private ScoreService service;
 
-    @PostMapping("/check/{appId}")
-    public CreditScore check(
-            @PathVariable Integer appId) {
+     @PostMapping("/check")
+    public int check(
+            @RequestBody ScoreRequest request) {
 
-        return service.checkScore(appId);
+        return service.checkScore(request);
     }
 }

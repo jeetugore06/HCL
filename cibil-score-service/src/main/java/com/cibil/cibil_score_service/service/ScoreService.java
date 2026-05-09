@@ -1,5 +1,8 @@
 package com.cibil.service;
 
+import com.cibil.cibil_score_service.FeignClient.ApplicationClient;
+import com.cibil.cibil_score_service.dto.ApplicationDTO;
+import com.cibil.cibil_score_service.dto.CreditRequest;
 import com.cibil.dto.ScoreRequest;
 import com.cibil.entity.Score;
 import com.cibil.repository.ScoreRepository;
@@ -18,28 +21,34 @@ public class ScoreService {
     @Autowired
     private ApplicationClient client;
 
-    public ScoreRequest checkScore(Integer appId) {
+    public ScoreRequest checkScore(CreditRequest request) {
 
         // Existing Score Check
-        Optional<ScoreRequest> existing =
-                repository.findByAppId(appId);
+         Optional<CustomerCredit> existingCustomer =
+                repository.findByPanNumber(
+                        request.getPanNo());
 
-        if (existing.isPresent()) {
-            return existing.get();
+        // If score already exists
+        if (existingCustomer.isPresent()) {
+
+            return existingCustomer
+                    .get()
+                    .getScore();
         }
 
-        // Call Another Microservice
-        ApplicationDTO applicationData =
-                client.getApplication(appId);
+        int score = calculateScore(request);
 
-        int score = calculateScore(applicationData);
+        // Save New Record
+        CustomerCredit customer =
+                new CustomerCredit();
 
-        ScoreRequest credit = new ScoreRequest();
+        customer.setPanNumber(
+                request.getPanNo());
 
-        credit.setAppId(appId);
-        credit.setScore(score);
-        repository.save(credit)
-        
+        customer.setScore(score);
+
+        repository.save(customer);
+
         return score;
     }
 

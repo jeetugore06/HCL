@@ -1,9 +1,9 @@
 
 package com.cibil.repository;
 
-import com.cibil.entity.Credit;
+import com.cibil.entity.Cibil;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CreditRepository
-        extends JpaRepository<Credit, Long> {
+public interface ScoreRepository
+        extends JpaRepository<Cibil, Long> {
 }

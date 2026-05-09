@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tbl_cibil_score")
+@Table(name = "tbl_cibil_score"
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "panNo")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,8 +18,9 @@ public class Cibil {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Integer appId;
+    
+    @Column(nullable = false, unique = true)
+    private String panNo;
 
     private Integer score;
 
