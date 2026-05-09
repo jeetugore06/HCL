@@ -1,10 +1,9 @@
 package com.cibil.cibil_score_service.service;
 
-import com.cibil.cibil_score_service.dto.ApplicationDTO;
 import com.cibil.cibil_score_service.dto.CreditRequest;
-import com.cibil.dto.ScoreRequest;
-import com.cibil.entity.Score;
-import com.cibil.repository.ScoreRepository;
+import com.cibil.cibil_score_service.dto.ScoreRequest;
+import com.cibil.cibil_score_service.entity.Cibil;
+import com.cibil.cibil_score_service.repository.ScoreRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
