@@ -1,0 +1,23 @@
+package com.cibil.controller;
+
+import com.cibil.dto.ScoreRequest;
+import com.cibil.entity.Score;
+import com.cibil.service.ScoreService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/cibil")
+public class ScoreController {
+
+     @Autowired
+    private CreditScoreService service;
+
+    @PostMapping("/check/{appId}")
+    public CreditScore check(
+            @PathVariable Integer appId) {
+
+        return service.checkScore(appId);
+    }
+}
